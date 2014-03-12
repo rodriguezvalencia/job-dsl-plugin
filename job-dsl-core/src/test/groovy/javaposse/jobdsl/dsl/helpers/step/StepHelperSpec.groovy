@@ -841,6 +841,19 @@ public class StepHelperSpec extends Specification {
         sbtStep.subdirPath[0].value() == ''
     }
 
+    def 'call lein method minimal'() {
+        when:
+        context.lein('test')
+
+        then:
+        context.stepNodes != null
+        context.stepNodes.size() == 1
+        def sbtStep = context.stepNodes[0]
+        sbtStep.name() == 'org.spootnik.LeiningenBuilder'
+        sbtStep.actions[0].value() == 'test'
+        sbtStep.subdirPath[0].value() == ''
+    }
+
     def 'call sbt method action only'() {
         when:
         context.sbt('SBT 0.12.3', 'test')

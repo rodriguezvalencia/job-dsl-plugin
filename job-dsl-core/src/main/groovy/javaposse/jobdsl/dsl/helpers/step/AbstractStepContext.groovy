@@ -103,6 +103,34 @@ class AbstractStepContext implements Context {
     }
 
     /**
+     <org.spootnik.LeiningenBuilder>
+     <name>Leiningen</name>
+     <jvmFlags>-XX:+CMSClassUnloadingEnabled -XX:MaxPermSize=512M -Dfile.encoding=UTF-8 -Xmx2G -Xms512M</jvmFlags>
+     <actions>test</actions>
+     <subdirPath></subdirPath>
+     </org.spootnik.LeiningenBuilder>
+     */
+    def lein(String actionsArg = null, String subdirPathArg=null, Closure configure = null) {
+
+        def nodeBuilder = new NodeBuilder()
+
+        def attributes = [plugin:'sbt@1.4']
+        def leinNode = nodeBuilder.'org.spootnik.LeiningenBuilder' {
+            actions actionsArg?:''
+            subdirPath subdirPathArg?:''
+        }
+
+        // Apply Context
+        if (configure) {
+            WithXmlAction action = new WithXmlAction(configure)
+            action.execute(leinNode)
+        }
+
+        stepNodes << leinNode
+
+    }
+
+    /**
      <javaposse.jobdsl.plugin.ExecuteDslScripts plugin="job-dsl@1.16">
         <targets>sbt-template.groovy</targets>
         <usingScriptText>false</usingScriptText>
